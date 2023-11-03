@@ -1,0 +1,16 @@
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+/* style AG-GRID column vertical borders*/
+.ag-theme-alpine {
+  --ag-cell-horizontal-border: var(--ag-row-border-width)
+    var(--ag-row-border-style) var(--ag-row-border-color); /* Add left and right borders to each cell and use row border's properties  */
+  --ag-header-column-separator-display: block;
+}
+.ag-theme-alpine .ag-header {
+    text-align: center;
+}
+

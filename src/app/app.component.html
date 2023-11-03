@@ -1,0 +1,135 @@
+<div class="container mt-10">
+  <form
+    [formGroup]="heroForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="text-center">
+      <h1>{{title}}</h1>
+    </div>
+    <div class="row g-3 mb-3 align-items-center">
+      <div class="col-2">
+        <label
+          for="name"
+          class="col-form-label"
+        >Hero Name<span class="text-danger fw-bold">*</span></label>
+      </div>
+      <div class="col-2">
+        <input
+          type="text"
+          id="name"
+          [style.with.%]="100"
+          [formControl]="name"
+          class="form-control"
+          placeholder="Enter Hero Name"
+          #inputHero
+        >
+      </div>
+      <!--username驗證失敗的錯誤訊息-->
+      <div
+        *ngIf="name.invalid && (name.dirty || name.touched)"
+        class="col-8 text-danger"
+      >
+        <div *ngIf="name.errors?.['required']">
+          Hero Name is required.
+        </div>
+        <div *ngIf="name.errors?.['HeroNameExists']">
+          This Hero name is already exists.
+        </div>
+      </div>
+    </div>
+    <div class="row g-3 mb-3 align-items-center">
+      <div class="col-2">
+        <label
+          for="level"
+          class="col-form-label"
+        >Hero Level</label>
+      </div>
+      <div class="col-2">
+        <select
+          id="level"
+          class="form-select"
+          [style.with.%]="100"
+          aria-label="Hero Level"
+          [formControl]="level"
+        >
+          <option
+            *ngFor="let level of levelList"
+            [value]="level"
+          >
+            {{level}}
+          </option>
+        </select>
+      </div>
+      <div class="col-8">&nbsp;</div>
+    </div>
+    <div class="row g-3 mb-3 align-items-center">
+      <div class="col-2">
+        <label
+          for="birthday"
+          class="col-form-label"
+        >Hero Birthday</label>
+      </div>
+      <div class="col-2">
+        <div class="input-group">
+          <input
+            id="birthday"
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="dp"
+            [formControl]="birthday"
+            ngbDatepicker
+            #birthdayDatepicker
+            #d="ngbDatepicker"
+          >
+          <div class="input-group-append">
+            <button
+              class="btn btn-outline-secondary calendar"
+              (click)="d.toggle()"
+              type="button"
+            ><i-bs name="calendar-date"></i-bs></button>
+          </div>
+        </div>
+      </div>
+      <!--username驗證失敗的錯誤訊息-->
+      <div
+        *ngIf="birthday.invalid && (birthday.dirty || birthday.touched)"
+        class="col-8 text-danger"
+      >
+        <div *ngIf="birthday.errors?.['pattern']">
+          birthday format must be yyyy-mm-dd.
+        </div>
+        <div *ngIf="birthday.errors?.['maxDate']">
+          birthday can't more than today.
+        </div>
+      </div>
+    </div>
+    <div class="row g-3 mb-3 align-items-center">
+      <div class="col-12">
+        <button
+          class="btn btn-secondary btn-block"
+          type="submit"
+          [disabled]="heroForm.invalid"
+        >Add hero</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="row g-3 mb-3 align-items-center">
+    <div class="col-12">
+      <!-- AG Grid Angular Component -->
+      <ag-grid-angular
+        test
+        class="ag-theme-alpine"
+        [style.height.px]="500"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [rowData]="rowData$ | async"
+        [rowSelection]="'multiple'"
+        [animateRows]="true"
+        (gridReady)="onGridReady($event)"
+        [pagination]="true"
+        [components]="components"
+      ></ag-grid-angular>
+    </div>
+  </div>
+</div>
