@@ -7,7 +7,6 @@ import {
   CellClickedEvent, ColDef, GridReadyEvent, ICellRendererParams, RowNodeTransaction
 } from 'ag-grid-community';
 import { catchError, EMPTY, finalize, Observable, of, switchMap, tap } from 'rxjs';
-import Swal from 'sweetalert2';
 
 import { DeleteButtonRenderComponent } from './render/delete-button-render/delete-button-render.component';
 import { HeroService } from './hero.service';
@@ -15,6 +14,7 @@ import { Hero } from 'src/model/hero';
 import { NameValidationService } from './namevalidation.service';
 import { formatDate } from '@angular/common';
 import { maxDateValidator } from './maxdatevalidator';
+import { ConfirmationDialogService } from './confirmation-dialog.service';
 
 //set init date for NgbDatePicker:(yyyy-mm-dd)
 //https://stackblitz.com/edit/angular-64knsp-pxsm3y?file=app%2Fdatepicker-adapter.ts
@@ -93,7 +93,7 @@ export class AppComponent implements OnInit {
     private parserFormatter: NgbDateParserFormatter,
     private ngbDatepickerConfig: NgbDatepickerConfig,
     private nameValidationService: NameValidationService,
-    private modalService: NgbModal) {
+    private confirmationDialogService: ConfirmationDialogService) {
     const today = new Date();
     this.ngbDatepickerConfig.maxDate = {
       year: today.getFullYear(),
@@ -200,33 +200,28 @@ export class AppComponent implements OnInit {
   //自訂義Delete Button事件
   onDeleteBtnClick(eventParm: any) {
     //Confirm確認刪除?
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You will not be able to recover this imaginary file!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, keep it'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.heroService.deleteHero(eventParm.rowData.id).pipe(
-          switchMap(data => {
-            //刪除後回傳的data會是空的Object
-            if (!data) {
-              return this.heroService.getHeroes();
-            } else {
-              return EMPTY;//直接結束
-            }
-          }),
-          catchError(error => {
-            console.log('error: ' + error);
-            return of(error);
+    this.confirmationDialogService.confirm('Are you sure?', `Delete this Hero: ${eventParm.rowData.name}?`)
+      .then((confirmed) => {
+        if (confirmed) {
+          this.heroService.deleteHero(eventParm.rowData.id).pipe(
+            switchMap(data => {
+              //刪除後回傳的data會是空的Object
+              if (!data) {
+                return this.heroService.getHeroes();
+              } else {
+                return EMPTY;//直接結束
+              }
+            }),
+            catchError(error => {
+              console.log('error: ' + error);
+              return of(error);
+            })
+          ).subscribe(data => {
+            this.agGrid.api.setRowData(data);
           })
-        ).subscribe(data => {
-          this.agGrid.api.setRowData(data);
-        })
-      }
-    });
+        }
+      })
+      .catch(() => console.log(`Just Close`));
   }
 
   //新增Hero

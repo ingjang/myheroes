@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageService {
-  constructor() { }
-  messages: string[] = [];
+  constructor(private modalService: NgbModal) { }
 
-  add(message: string) {
-    this.messages.push(message);
-  }
+  open(message: string, title = 'Message') {
 
-  clear() {
-    this.messages = [];
+    const modalRef = this.modalService.open(MessageDialogComponent);
+    modalRef.componentInstance.title = title;
+    modalRef.componentInstance.message = message;
+
+    return modalRef.result;
   }
 }

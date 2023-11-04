@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MessageService } from './message.service';
 import { Hero } from '../model/hero';
-import { catchError, Observable, of, tap } from 'rxjs';
+import { catchError, Observable, of, retry, tap } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -22,19 +22,10 @@ export class HeroService {
   }
 
 
-  /** Log a HeroService message with the MessageService */
-  private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
-  }
-
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      this.log(`${operation} failed: ${error.message}`);
+      this.messageService.open(`${operation} failed.`);
 
       // Let the app keep running by returning an empty result.
       return of(result as T);
@@ -43,7 +34,6 @@ export class HeroService {
 
   addHero(hero: Hero): Observable<Hero> {
     return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions).pipe(
-      tap(_ => this.log(`addHero Service`)),
       catchError(this.handleError<Hero>('addHero'))
     );
   }
@@ -53,7 +43,6 @@ export class HeroService {
     const url = `${this.heroesUrl}/${id}`;
 
     return this.http.delete<Hero>(url, this.httpOptions).pipe(
-      tap(_ => this.log(`deleteHero Service`)),
       catchError(this.handleError<Hero>('deleteHero'))
     );
   }

@@ -9,13 +9,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { DeleteButtonRenderComponent } from './render/delete-button-render/delete-button-render.component';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './in-memory-data.service';
-import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
+import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    DeleteButtonRenderComponent
+    DeleteButtonRenderComponent,
+    ConfirmationDialogComponent,
+    MessageDialogComponent
 
   ],
   imports: [
@@ -30,8 +33,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
       InMemoryDataService, { dataEncapsulation: false }
     ),
     ReactiveFormsModule,
-    NgxBootstrapIconsModule.pick(allIcons),
-    SweetAlert2Module
+    NgxBootstrapIconsModule.pick(allIcons)
   ],
   providers: [],
   bootstrap: [AppComponent]
