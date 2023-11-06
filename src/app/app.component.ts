@@ -108,7 +108,7 @@ export class AppComponent implements OnInit {
         {
           validators: [Validators.required],
           asyncValidators: [this.nameValidationService.heroNameValidator()],
-          //updateOn: 'blur'//焦點移再驗證
+          updateOn: 'blur'//焦點移再驗證
         }
       ],
       level: '0',
@@ -130,20 +130,19 @@ export class AppComponent implements OnInit {
   }
 
   public columnDefs: ColDef[] = [
-    { field: 'id', cellStyle: { textAlign: 'center' } },
-    { field: 'name' },
-    { field: 'level', cellStyle: { textAlign: 'center' } },
+    { field: 'id' },
+    { field: 'name', cellStyle: { textAlign: 'left' } },
+    { field: 'level' },
     {
       field: 'birthday', // Your date field
       cellRenderer: this.customDateFormat.bind(this),
-      cellStyle: { textAlign: 'center' }
+
     },
     {
       field: 'Link',
       cellRenderer: (params: ICellRendererParams) => {
         return `<a href="javascript:void(0)">Link</a>`
-      },
-      cellStyle: { textAlign: 'center' }
+      }
     },
     {
       field: 'Delete',
@@ -151,8 +150,7 @@ export class AppComponent implements OnInit {
       cellRendererParams: {
         onClick: this.onDeleteBtnClick.bind(this),
         buttonLabel: 'X'
-      },
-      cellStyle: { textAlign: 'center' }
+      }
     }
   ];
 
@@ -160,6 +158,8 @@ export class AppComponent implements OnInit {
   public defaultColDef: ColDef = {
     sortable: true,
     filter: true,
+    cellStyle: { textAlign: 'center' }
+
   };
 
   // Data that gets displayed in the grid
